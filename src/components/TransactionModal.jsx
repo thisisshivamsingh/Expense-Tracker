@@ -3,12 +3,17 @@ import { Modal, Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { editExpense, deleteExpense } from "../features/expenseTrackSlice";
 
-const TransactionModal = ({ isOpen, onClose, transactionDet, setTransactionDet }) => {
+const TransactionModal = ({
+  isOpen,
+  onClose,
+  transactionDet,
+  setTransactionDet,
+}) => {
   const [error, setError] = useState(false);
   const balance = useSelector((state) => state.expenseTrack.balance);
   const dispatch = useDispatch();
 
-    // Function to handle editing an expense
+  // Function to handle editing an expense
   const editExpenseHandler = (event) => {
     event.preventDefault();
     const amount = parseFloat(transactionDet.amount);
@@ -25,7 +30,7 @@ const TransactionModal = ({ isOpen, onClose, transactionDet, setTransactionDet }
     }
   };
 
-   // Function to handle deleting an expense
+  // Function to handle deleting an expense
   const handleDelete = (event) => {
     event.preventDefault();
     dispatch(deleteExpense({ transactionDetId: transactionDet.id }));
@@ -33,8 +38,19 @@ const TransactionModal = ({ isOpen, onClose, transactionDet, setTransactionDet }
   };
 
   return (
-    <Modal show={isOpen} onHide={onClose}>
-      <Modal.Header closeButton></Modal.Header>
+    <Modal
+      show={isOpen}
+      onHide={() => {
+        setError(false);
+        onClose();
+      }}
+    >
+      <Modal.Header
+        closeButton
+        onClick={() => {
+          setError(false);
+        }}
+      ></Modal.Header>
       {error && (
         <div className="alert alert-danger mx-3 mb-0" role="alert">
           Low Balance!
@@ -48,7 +64,10 @@ const TransactionModal = ({ isOpen, onClose, transactionDet, setTransactionDet }
               placeholder="Description"
               value={transactionDet.description}
               onChange={(e) =>
-                setTransactionDet({ ...transactionDet, description: e.target.value })
+                setTransactionDet({
+                  ...transactionDet,
+                  description: e.target.value,
+                })
               }
             />
           </Form.Group>
@@ -64,7 +83,6 @@ const TransactionModal = ({ isOpen, onClose, transactionDet, setTransactionDet }
           </Form.Group>
           <div className="col-12 mt-3">
             <Button
-              
               className="btn btn-secondary btn-lg btn-block rounded-0"
               style={{ width: "100%" }}
               onClick={editExpenseHandler}
@@ -74,7 +92,6 @@ const TransactionModal = ({ isOpen, onClose, transactionDet, setTransactionDet }
           </div>
           <div className="col-12 mt-3">
             <Button
-              
               className="btn btn-secondary btn-lg btn-block rounded-0"
               style={{ width: "100%" }}
               onClick={handleDelete}
